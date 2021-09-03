@@ -40,6 +40,7 @@ class NetworkService {
             { data in
                 if let postsResponse = try? JSONDecoder().decode([PSPost].self, from: data) {
                     UserDefaults.standard.setValue(try? PropertyListEncoder().encode(postsResponse), forKey: .cacheKeyPosts)
+                    UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: .defaultsKeyLastRefreshIntervalSince1970)
                     callback(postsResponse)
                     return
                 }
@@ -53,6 +54,26 @@ class NetworkService {
             } else {
                 errorCallback("Error reading posts from cache.")
             }
+        }
+    }
+    
+    func deletePostWithId(_ postId: Int, callback: @escaping () -> Void, errorCallback: @escaping (_ error: String) -> Void) {
+        if let data = UserDefaults.standard.value(forKey: .cacheKeyPosts) as? Data {
+            do {
+                let posts = try PropertyListDecoder().decode([PSPost].self, from: data)
+                var newPosts: [PSPost] = []
+                for post in posts {
+                    if (post.id != postId) {
+                        newPosts.append(post)
+                    }
+                }
+                UserDefaults.standard.setValue(try? PropertyListEncoder().encode(newPosts), forKey: .cacheKeyPosts)
+                callback()
+            } catch {
+                errorCallback("Error reading posts from cache.")
+            }
+        } else {
+            errorCallback("Error reading posts from cache.")
         }
     }
     

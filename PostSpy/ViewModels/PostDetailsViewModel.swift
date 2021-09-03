@@ -9,6 +9,7 @@ import Foundation
 
 class PostDetailsViewModel: ViewModel {
     @Published private(set) var user: PSUser?
+    @Published private(set) var postDeleted: Bool = false
     @Published private(set) var networkAlert: Bool = false
     @Published private(set) var networkErrorText: String = ""
     private let networkService: NetworkService = NetworkService()
@@ -28,7 +29,17 @@ class PostDetailsViewModel: ViewModel {
     }
     
     func deletePost(postId: Int) {
-        
+        networkService.deletePostWithId(postId)
+        { [weak self] in
+            DispatchQueue.main.async {
+                self?.postDeleted = true
+            }
+        } errorCallback: { [weak self] error in
+            DispatchQueue.main.async {
+                self?.networkAlert = true
+                self?.networkErrorText = error
+            }
+        }
     }
     
     override init() {

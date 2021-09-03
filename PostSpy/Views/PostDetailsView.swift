@@ -45,6 +45,7 @@ struct PostDetailsView: View {
                 presentationMode.wrappedValue.dismiss()
             }, label: {
                 Text("DELETE")
+                    .foregroundColor(.postSpyTextSecondary)
             })
             .frame(maxWidth: .infinity, minHeight: 40)
         })
