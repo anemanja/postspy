@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var viewModel = PostsViewModel()
+    @State var shouldShowAlert: Bool = false
     
     var body: some View {
         NavigationView(content: {
@@ -18,19 +19,28 @@ struct ContentView: View {
                 }
             }
             .onAppear {
-                viewModel.reloadPosts()
+                viewModel.reloadPosts() {
+                    shouldShowAlert = true
+                }
+            }
+            .alert(isPresented: $shouldShowAlert) {
+                Alert(title: Text("Network Error"), message: Text(viewModel.networkErrorText))
             }
             .toolbar(content: {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: {
-                        viewModel.reloadPosts(forcedRefresh: true)
+                        viewModel.reloadPosts(forcedRefresh: true) {
+                            shouldShowAlert = true
+                        }
                     }, label: {
-                        Image(systemName: "arrow.clockwise.circle.fill")
+                        Image(systemName: "arrow.clockwise")
+                            .imageScale(.large)
                     })
                 }
             })
             .navigationTitle("Posts")
         })
+        .accentColor(.postSpyPrimary)
         
     }
 }

@@ -16,7 +16,7 @@ struct PostView: View {
                 .font(.headline)
                 .padding(.bottom, 5.0)
                 .textCase(/*@START_MENU_TOKEN@*/.uppercase/*@END_MENU_TOKEN@*/)
-            Divider()
+                .foregroundColor(.postSpyTextPrimary)
             Text(post.body)
                 .font(.body)
                 .lineLimit(1)

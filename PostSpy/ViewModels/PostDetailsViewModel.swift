@@ -14,7 +14,7 @@ class PostDetailsViewModel: ViewModel {
     @Published private(set) var networkErrorText: String = ""
     private let networkService: NetworkService = NetworkService()
     
-    func loadUser(userId: Int) {
+    func loadUser(userId: Int, alert: @escaping () -> Void) {
         networkService.getUserWithId(String(userId))
         { [weak self] data in
             DispatchQueue.main.async {
@@ -22,13 +22,13 @@ class PostDetailsViewModel: ViewModel {
             }
         } errorCallback: { [weak self] error in
             DispatchQueue.main.async {
-                self?.networkAlert = true
                 self?.networkErrorText = error ?? "Unknown error has occured."
+                alert()
             }
         }
     }
     
-    func deletePost(postId: Int) {
+    func deletePost(postId: Int, alert: @escaping () -> Void) {
         networkService.deletePostWithId(postId)
         { [weak self] in
             DispatchQueue.main.async {
@@ -36,8 +36,8 @@ class PostDetailsViewModel: ViewModel {
             }
         } errorCallback: { [weak self] error in
             DispatchQueue.main.async {
-                self?.networkAlert = true
                 self?.networkErrorText = error
+                alert()
             }
         }
     }

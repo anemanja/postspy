@@ -12,7 +12,7 @@ class NetworkService {
     let defaultSession = URLSession(configuration: .default)
     var dataTask: URLSessionDataTask?
     
-    func get(endpoint: String, parameter: String?, callback: @escaping (_ data: Data) -> Void, errorCallback: @escaping (_ error: Error) -> Void) {
+    func get(endpoint: String, parameter: String?, callback: @escaping (_ data: Data) -> Void, errorCallback: @escaping (_ error: String) -> Void) {
 
         guard let url = URL(string: apiAddress + "/" + endpoint + "/" + (parameter ?? "")) else {
             print("Invalid URL")
@@ -21,15 +21,16 @@ class NetworkService {
         
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
         URLSession.shared.dataTask(with: request) { d, r, e in
-            guard let httpResponse = r as? HTTPURLResponse else { return }
+            guard let httpResponse = r as? HTTPURLResponse else {
+                errorCallback(e?.localizedDescription ?? "Unknown error.")
+                return
+            }
             if (httpResponse.statusCode == 200) {
                 if (d != nil) {
                     callback(d!)
                 }
             } else {
-                if (e != nil) {
-                    errorCallback(e!)
-                }
+                errorCallback(e?.localizedDescription ?? "Error " + String(httpResponse.statusCode))
             }
         }.resume()
     }
@@ -45,7 +46,7 @@ class NetworkService {
                     return
                 }
             } errorCallback: { error in
-                errorCallback(error.localizedDescription)
+                errorCallback(error)
             }
         } else {
             if let data = UserDefaults.standard.value(forKey: .cacheKeyPosts) as? Data {
@@ -87,7 +88,7 @@ class NetworkService {
                     return
                 }
             } errorCallback: { error in
-                errorCallback(error.localizedDescription)
+                errorCallback(error)
             }
         } else {
             if let data = UserDefaults.standard.value(forKey: .cacheKeyUsers) as? Data {

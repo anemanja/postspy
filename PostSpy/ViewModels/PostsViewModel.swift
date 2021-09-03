@@ -9,11 +9,10 @@ import Foundation
 
 class PostsViewModel: ViewModel {
     @Published private(set) var posts: [PSPost] = []
-    @Published private(set) var networkAlert: Bool = false
     @Published private(set) var networkErrorText: String = ""
     private let networkService: NetworkService = NetworkService()
     
-    func reloadPosts(forcedRefresh: Bool = false) {
+    func reloadPosts(forcedRefresh: Bool = false, alert: @escaping () -> Void) {
         networkService.getPosts (forcedRefresh: forcedRefresh)
         { [weak self] data in
             DispatchQueue.main.async {
@@ -21,8 +20,8 @@ class PostsViewModel: ViewModel {
             }
         } errorCallback: { [weak self] error in
             DispatchQueue.main.async {
-                self?.networkAlert = true
                 self?.networkErrorText = error ?? "Unknown error has occured."
+                alert()
             }
         }
     }

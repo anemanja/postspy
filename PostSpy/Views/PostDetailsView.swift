@@ -10,6 +10,7 @@ import SwiftUI
 struct PostDetailsView: View {
     @ObservedObject var viewModel: PostDetailsViewModel
     @Environment(\.presentationMode) var presentationMode
+    @State var shouldShowAlert: Bool = false
     
     var post: PSPost
     
@@ -19,6 +20,7 @@ struct PostDetailsView: View {
                 .font(.headline)
                 .padding(.bottom, 5.0)
                 .textCase(.uppercase)
+                .foregroundColor(.postSpyTextPrimary)
                 .padding()
             ScrollView(content: {
                 Text(post.body)
@@ -26,7 +28,7 @@ struct PostDetailsView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
             })
-            .border(Color.gray, width: 1)
+            Divider()
             VStack(content: {
                 Text(viewModel.user?.name ?? "")
                     .font(.subheadline)
@@ -36,22 +38,32 @@ struct PostDetailsView: View {
                     .multilineTextAlignment(.trailing)
                     .textCase(.lowercase)
                     .font(.subheadline)
-                    .foregroundColor(.blue)
+                    .foregroundColor(.postSpyTextPrimary)
                     .frame(maxWidth: .infinity)
             })
             .padding()
+            Divider()
             Button(action: {
-                viewModel.deletePost(postId: post.id)
+                viewModel.deletePost(postId: post.id) {
+                    shouldShowAlert = true
+                }
                 presentationMode.wrappedValue.dismiss()
             }, label: {
-                Text("DELETE")
-                    .foregroundColor(.postSpyTextSecondary)
+                Image(systemName: "trash")
+                    .imageScale(.large)
+                    .foregroundColor(.postSpySecondary)
             })
             .frame(maxWidth: .infinity, minHeight: 40)
         })
         .onAppear() {
-            viewModel.loadUser(userId: post.userId)
+            viewModel.loadUser(userId: post.userId) {
+                shouldShowAlert = true
+            }
         }
+        .alert(isPresented: $shouldShowAlert) {
+            Alert(title: Text("Network Error"), message: Text(viewModel.networkErrorText))
+        }
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

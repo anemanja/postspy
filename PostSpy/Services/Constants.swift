@@ -22,9 +22,8 @@ extension Double {
 }
 
 extension Color {
-    public static let postSpyPrimary = Color(red: 0.3, green: 0.9, blue: 0.4)
-    public static let postSpySecondary = Color(red: 0.9, green: 0.3, blue: 0.4)
-    public static let postSpyBackground = Color.black
+    public static let postSpyPrimary = Color(red: 0.1, green: 0.7, blue: 0.3)
+    public static let postSpySecondary = Color(red: 0.7, green: 0.1, blue: 0.3)
     
     // MARK: Text Colors
     public static let postSpyTextPrimary = Color.postSpyPrimary

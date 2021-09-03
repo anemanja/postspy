@@ -14,4 +14,8 @@ struct PostSpyApp: App {
             ContentView()
         }
     }
+    
+    init() {
+        UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = UIColor(.postSpyPrimary)
+    }
 }
