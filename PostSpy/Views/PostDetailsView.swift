@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PostDetailsView: View {
     @ObservedObject var viewModel: PostDetailsViewModel
+    @Environment(\.presentationMode) var presentationMode
     
     var post: PSPost
     
@@ -17,7 +18,7 @@ struct PostDetailsView: View {
             Text(post.title)
                 .font(.headline)
                 .padding(.bottom, 5.0)
-                .textCase(/*@START_MENU_TOKEN@*/.uppercase/*@END_MENU_TOKEN@*/)
+                .textCase(.uppercase)
                 .padding()
             ScrollView(content: {
                 Text(post.body)
@@ -39,6 +40,13 @@ struct PostDetailsView: View {
                     .frame(maxWidth: .infinity)
             })
             .padding()
+            Button(action: {
+                viewModel.deletePost(postId: post.id)
+                presentationMode.wrappedValue.dismiss()
+            }, label: {
+                Text("DELETE")
+            })
+            .frame(maxWidth: .infinity, minHeight: 40)
         })
         .onAppear() {
             viewModel.loadUser(userId: post.userId)

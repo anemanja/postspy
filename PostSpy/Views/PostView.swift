@@ -12,9 +12,15 @@ struct PostView: View {
     
     var body: some View {
         VStack(alignment: .leading, content: {
-            Text(post.title).font(.headline).padding(.bottom, 5.0).textCase(/*@START_MENU_TOKEN@*/.uppercase/*@END_MENU_TOKEN@*/)
+            Text(post.title)
+                .font(.headline)
+                .padding(.bottom, 5.0)
+                .textCase(/*@START_MENU_TOKEN@*/.uppercase/*@END_MENU_TOKEN@*/)
             Divider()
-            Text(post.body).font(.body).lineLimit(1).padding(.bottom, 10.0)
+            Text(post.body)
+                .font(.body)
+                .lineLimit(1)
+                .padding(.bottom, 10.0)
         })
         .padding()
     }

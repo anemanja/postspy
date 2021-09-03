@@ -22,6 +22,8 @@
 		EFC2E8AE26E1A6DA00DAB8C7 /* posts.json in Resources */ = {isa = PBXBuildFile; fileRef = EFC2E8AD26E1A6DA00DAB8C7 /* posts.json */; };
 		EFC2E8B026E1AE8900DAB8C7 /* PostDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC2E8AF26E1AE8900DAB8C7 /* PostDetailsViewModel.swift */; };
 		EFC2E8B226E1B3A500DAB8C7 /* user3.json in Resources */ = {isa = PBXBuildFile; fileRef = EFC2E8B126E1B3A500DAB8C7 /* user3.json */; };
+		EFC2E8B626E22CD200DAB8C7 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC2E8B526E22CD200DAB8C7 /* Constants.swift */; };
+		EFC2E8B826E244C800DAB8C7 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC2E8B726E244C800DAB8C7 /* ViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +65,8 @@
 		EFC2E8AD26E1A6DA00DAB8C7 /* posts.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = posts.json; sourceTree = "<group>"; };
 		EFC2E8AF26E1AE8900DAB8C7 /* PostDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailsViewModel.swift; sourceTree = "<group>"; };
 		EFC2E8B126E1B3A500DAB8C7 /* user3.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = user3.json; sourceTree = "<group>"; };
+		EFC2E8B526E22CD200DAB8C7 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		EFC2E8B726E244C800DAB8C7 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +169,7 @@
 		EFC2E8A926E1A34400DAB8C7 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				EFC2E8B726E244C800DAB8C7 /* ViewModel.swift */,
 				EFC2E8A626E13E4F00DAB8C7 /* PostsViewModel.swift */,
 				EFC2E8AF26E1AE8900DAB8C7 /* PostDetailsViewModel.swift */,
 			);
@@ -184,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				EFC2E89C26E1111000DAB8C7 /* NetworkService.swift */,
+				EFC2E8B526E22CD200DAB8C7 /* Constants.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -329,7 +335,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EFC2E8A126E11E7700DAB8C7 /* PSUser.swift in Sources */,
+				EFC2E8B626E22CD200DAB8C7 /* Constants.swift in Sources */,
 				EFC2E8A726E13E4F00DAB8C7 /* PostsViewModel.swift in Sources */,
+				EFC2E8B826E244C800DAB8C7 /* ViewModel.swift in Sources */,
 				EFC2E8A326E125B000DAB8C7 /* PostView.swift in Sources */,
 				EFC2E89F26E11DC100DAB8C7 /* PSPost.swift in Sources */,
 				EFC2E8B026E1AE8900DAB8C7 /* PostDetailsViewModel.swift in Sources */,

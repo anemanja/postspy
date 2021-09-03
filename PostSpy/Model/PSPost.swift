@@ -17,3 +17,7 @@ struct PSPost: Hashable, Codable {
 struct PSPostsResponse: Codable {
     var posts: [PSPost]
 }
+
+class PSPostWrapper: NSObject {
+    
+}

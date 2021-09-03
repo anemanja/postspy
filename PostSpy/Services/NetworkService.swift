@@ -12,14 +12,14 @@ class NetworkService {
     let defaultSession = URLSession(configuration: .default)
     var dataTask: URLSessionDataTask?
     
-    func get(endpoint: String, parameter: String?, forcedRefresh: Bool, callback: @escaping (_ data: Data) -> Void, errorCallback: @escaping (_ error: Error) -> Void) {
+    func get(endpoint: String, parameter: String?, callback: @escaping (_ data: Data) -> Void, errorCallback: @escaping (_ error: Error) -> Void) {
 
         guard let url = URL(string: apiAddress + "/" + endpoint + "/" + (parameter ?? "")) else {
             print("Invalid URL")
             return
         }
         
-        let request = URLRequest(url: url, cachePolicy: currentCachePolicy(forcedRefresh: forcedRefresh))
+        let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
         URLSession.shared.dataTask(with: request) { d, r, e in
             guard let httpResponse = r as? HTTPURLResponse else { return }
             if (httpResponse.statusCode == 200) {
@@ -34,20 +34,51 @@ class NetworkService {
         }.resume()
     }
     
-    private let USER_DEFAULTS_KEY_lastRefreshDate: String = "lastRefreshDate"
-    private func currentCachePolicy(forcedRefresh: Bool) -> URLRequest.CachePolicy {
-        if (forcedRefresh) {
-            UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: USER_DEFAULTS_KEY_lastRefreshDate)
-            return .reloadIgnoringLocalCacheData
-        }
-        
-        let lastRefreshDate = UserDefaults.standard.double(forKey: USER_DEFAULTS_KEY_lastRefreshDate)
-        if (lastRefreshDate + 5 * 60 < Date().timeIntervalSince1970) {
-            return .returnCacheDataElseLoad
-            
+    func getPosts(forcedRefresh: Bool = false, callback: @escaping (_ data: [PSPost]) -> Void, errorCallback: @escaping (_ error: String?) -> Void) {
+        if (forcedRefresh || UserDefaults.standard.value(forKey: .cacheKeyPosts) == nil || Date().timeIntervalSince1970 - UserDefaults.standard.double(forKey: .defaultsKeyLastRefreshIntervalSince1970) > .cacheLifetimeInterval) {
+            get(endpoint: "posts", parameter: nil)
+            { data in
+                if let postsResponse = try? JSONDecoder().decode([PSPost].self, from: data) {
+                    UserDefaults.standard.setValue(try? PropertyListEncoder().encode(postsResponse), forKey: .cacheKeyPosts)
+                    callback(postsResponse)
+                    return
+                }
+            } errorCallback: { error in
+                errorCallback(error.localizedDescription)
+            }
         } else {
-            UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: USER_DEFAULTS_KEY_lastRefreshDate)
-            return .reloadIgnoringLocalCacheData
+            if let data = UserDefaults.standard.value(forKey: .cacheKeyPosts) as? Data {
+                let postsResponse = try? PropertyListDecoder().decode([PSPost].self, from: data)
+                callback(postsResponse ?? [])
+            } else {
+                errorCallback("Error reading posts from cache.")
+            }
+        }
+    }
+    
+    func getUserWithId(_ userId: String, forcedRefresh: Bool = false, callback: @escaping (_ data: PSUser) -> Void, errorCallback: @escaping (_ error: String?) -> Void) {
+        if (forcedRefresh || UserDefaults.standard.value(forKey: .cacheKeyUsers) == nil || Date().timeIntervalSince1970 - UserDefaults.standard.double(forKey: .defaultsKeyLastRefreshIntervalSince1970) > .cacheLifetimeInterval) {
+            get(endpoint: "users/" + userId, parameter: nil)
+            { data in
+                if let userResponse = try? JSONDecoder().decode(PSUser.self, from: data) {
+                    UserDefaults.standard.setValue(try? PropertyListEncoder().encode(userResponse), forKey: .cacheKeyUsers + userId)
+                    callback(userResponse)
+                    return
+                }
+            } errorCallback: { error in
+                errorCallback(error.localizedDescription)
+            }
+        } else {
+            if let data = UserDefaults.standard.value(forKey: .cacheKeyUsers) as? Data {
+                do {
+                    let userResponse = try PropertyListDecoder().decode(PSUser.self, from: data)
+                    callback(userResponse)
+                } catch {
+                    errorCallback(("Error reading user with id = " + userId + " from cache."))
+                }
+            } else {
+                errorCallback("Error reading user with id = " + userId + " from cache.")
+            }
         }
     }
 }
