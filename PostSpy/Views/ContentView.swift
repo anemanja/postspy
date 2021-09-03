@@ -20,6 +20,15 @@ struct ContentView: View {
             .onAppear {
                 viewModel.reloadPosts()
             }
+            .toolbar(content: {
+                ToolbarItem(placement: .primaryAction) {
+                    Button(action: {
+                        viewModel.reloadPosts(forcedRefresh: true)
+                    }, label: {
+                        Image(systemName: "arrow.clockwise.circle.fill")
+                    })
+                }
+            })
             .navigationTitle("Posts")
         })
         

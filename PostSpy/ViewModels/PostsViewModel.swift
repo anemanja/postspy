@@ -13,8 +13,8 @@ class PostsViewModel: ViewModel {
     @Published private(set) var networkErrorText: String = ""
     private let networkService: NetworkService = NetworkService()
     
-    func reloadPosts() {
-        networkService.getPosts
+    func reloadPosts(forcedRefresh: Bool = false) {
+        networkService.getPosts (forcedRefresh: forcedRefresh)
         { [weak self] data in
             DispatchQueue.main.async {
                 self?.posts = data
